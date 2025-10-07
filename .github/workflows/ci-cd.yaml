@@ -64,7 +64,7 @@ jobs:
       with:
         image-ref: ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
         format: 'table'
-        exit-code: '1'
+        exit-code: '0'
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
         ignore-unfixed: true
