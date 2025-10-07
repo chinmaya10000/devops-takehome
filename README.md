@@ -27,10 +27,10 @@ devops-takehome/
 │   └── workflows/
 │       └── ci-cd.yaml
 ├── terraform/                 # EKS provisioning
-│   ├── main.tf
+│   ├── main-eks.tf
 │   ├── variables.tf
 │   ├── outputs.tf
-│   └── providers.tf
+│   └── versions.tf
 ├── app/                       # Flask app source code
 │   ├── app.py
 │   ├── requirements.txt

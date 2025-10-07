@@ -7,6 +7,7 @@ on:
       - k8s-manifest/**
       - README.md
       - terraform/**
+      - kustomize/**
   pull_request:
     branches: [main]
 
@@ -57,6 +58,25 @@ jobs:
     
     - name: Build Docker Image
       run: docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-app:latest ./app
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
+        format: 'table'
+        exit-code: '1'
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
+        ignore-unfixed: true
+        output: trivy.json
+        color: 'always'
+    
+    - name: Upload Trivy Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: trivy-report
+        path: trivy.json
 
     - name: Push Docker Image
       run: docker push ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
