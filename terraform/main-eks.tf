@@ -1,18 +1,14 @@
-provider "aws" {
-  region = var.aws_region
-}
-
 # VPC for Cluster
 data "aws_availability_zones" "available" {} 
   
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "6.0.1"
+  version = "6.0.0"
 
   name = var.name
   cidr = var.vpc_cidr_block
 
-  azs             = data.aws_availability_zones.azs.names
+  azs             = data.aws_availability_zones.available.names
   private_subnets = var.private_subnet_cidr_blocks
   public_subnets  = var.public_subnet_cidr_blocks
 
@@ -56,14 +52,16 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+  
 
   # EKS Managed Node Group(s)
   eks_managed_node_groups = {
-    initial = {
-        instance_types = "t3.medium"
-        desired_capacity = 2
-        max_capacity     = 3
-        min_capacity     = 1
+    example = {
+      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+      instance_types = ["t3.medium"]
+      min_size     = 2
+      max_size     = 5
+      desired_size = 2
     }
   }
 
